@@ -7,13 +7,9 @@ app.use(cors());
 
 app.get("/api/static-stream/:id", async (req, res) => {
   const id = req.params.id;
-
-  if (!id) {
-    return res.status(400).json({ error: "Falta ID" });
-  }
+  if (!id) return res.status(400).json({ error: "Falta ID" });
 
   try {
-    // Llama al endpoint real que te devuelve la info completa (ejemplo)
     const response = await fetch(`https://player-00.live/api/static-stream/${id}`);
     if (!response.ok) {
       return res.status(500).json({ error: "Error al obtener la URL firmada" });
@@ -21,16 +17,13 @@ app.get("/api/static-stream/:id", async (req, res) => {
 
     const data = await response.json();
 
-    // data.sources[0].file debe contener la URL completa con parámetros
     if (!data.sources || !data.sources[0] || !data.sources[0].file) {
       return res.status(404).json({ error: "Fuente de video no encontrada" });
     }
 
     res.json({
       sources: [
-        {
-          file: data.sources[0].file
-        }
+        { file: data.sources[0].file }
       ]
     });
   } catch (error) {
@@ -39,8 +32,9 @@ app.get("/api/static-stream/:id", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`✅ Servidor escuchando en http://localhost:${PORT}`);
+  console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
+
 
