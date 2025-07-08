@@ -7,24 +7,24 @@ app.use(cors());
 
 app.get("/api/static-stream/:id", async (req, res) => {
   const id = req.params.id;
+
   if (!id) return res.status(400).json({ error: "Falta ID" });
 
   try {
-    // Aquí haces la petición a la API externa que devuelve la URL firmada
+    // Llama a la API real que genera la URL firmada
     const response = await fetch(`https://player-00.live/api/static-stream/${id}`);
 
     if (!response.ok) {
-      return res.status(500).json({ error: "Error al obtener la URL firmada" });
+      return res.status(500).json({ error: "Error al obtener URL firmada" });
     }
 
     const data = await response.json();
 
-    // Validar que la data tenga la estructura esperada
     if (!data.sources || !data.sources[0] || !data.sources[0].file) {
-      return res.status(404).json({ error: "Fuente de video no encontrada" });
+      return res.status(404).json({ error: "Fuente no encontrada" });
     }
 
-    // Retornar la URL firmada tal cual
+    // Devuelve la URL firmada real al cliente
     res.json({
       sources: [
         {
@@ -32,16 +32,15 @@ app.get("/api/static-stream/:id", async (req, res) => {
         }
       ]
     });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error interno del servidor" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error interno" });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Servidor escuchando en http://localhost:${PORT}`);
+  console.log(`Servidor escuchando en puerto ${PORT}`);
 });
 
 
